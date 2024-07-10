@@ -51,4 +51,30 @@ public class UserDao {
 		return result;
 	}
 
+	public User loginUser(String id, String pw, Connection conn) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		User u = null;
+		try {
+			String sql = "SELECT * FROM `user` WHERE `user_id` = ? AND `user_pw` = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				u = new User(rs.getInt("user_no")
+						,rs.getString("user_id")
+						,rs.getString("user_pw")
+						,rs.getString("user_name"));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		return u;
+	}
+
 }
